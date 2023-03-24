@@ -1,0 +1,1345 @@
+Starting experiment Test
+
+data for architecture search
+batch num of train: 1
+batch num of valid: 1
+total num of test: 1
+Train iteration 0 starts 
+
+current depth 0  after 2
+
+> training...
+
+---------- depth 0 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 0
+---- prog 0  :  Start
+---- subm program
+-- weight 0.0 | 0.25  valid 1  : affine  | 
+-- weight 0.0 | 0.25  valid 1  : and  | 
+-- weight 0.0 | 0.25  valid 1  : or  | 
+-- weight 0.0 | 0.25  valid 1  : equality  | 
+
+
+---------- depth 1 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 1
+---- prog 0  :  affine
+---- prog 1  :  and
+---- subm function1
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- subm function2
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- prog 2  :  or
+---- subm function1
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- subm function2
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- prog 3  :  equality
+
+---------- depth 2 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+-------- Node 1
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+number of architecture parameters 12
+number of model parameters 24
+ratio between arch/model parameter is: 0.5
+learning rate: 0.045 | 0.045
+------------------------
+training epoch: 0
+architecture loss: 0.42135170102119446
+model loss: 0.39009857177734375
+Validation score is: 0.1140
+------------------------
+training epoch: 1
+architecture loss: 0.12105005979537964
+model loss: 0.1093214899301529
+Validation score is: 0.1036
+------------------------
+training epoch: 2
+architecture loss: 0.1093214899301529
+model loss: 0.09828709810972214
+Validation score is: 0.0936
+------------------------
+training epoch: 3
+architecture loss: 0.09828709810972214
+model loss: 0.08807875961065292
+Validation score is: 0.0843
+------------------------
+training epoch: 4
+architecture loss: 0.08807875961065292
+model loss: 0.0787413939833641
+Validation score is: 0.0757
+------------------------
+training epoch: 5
+architecture loss: 0.0787413939833641
+model loss: 0.07027392834424973
+Validation score is: 0.0679
+------------------------
+training epoch: 6
+architecture loss: 0.07027392834424973
+model loss: 0.06264815479516983
+Validation score is: 0.0607
+------------------------
+training epoch: 7
+architecture loss: 0.06264815479516983
+model loss: 0.0558195598423481
+Validation score is: 0.0543
+------------------------
+training epoch: 8
+architecture loss: 0.0558195598423481
+model loss: 0.04973394796252251
+Validation score is: 0.0485
+------------------------
+training epoch: 9
+architecture loss: 0.04973394796252251
+model loss: 0.04433180391788483
+Validation score is: 0.0434
+------------------------
+training epoch: 10
+architecture loss: 0.04433180391788483
+model loss: 0.039551880210638046
+Validation score is: 0.0388
+------------------------
+training epoch: 11
+architecture loss: 0.039551880210638046
+model loss: 0.035333301872015
+Validation score is: 0.0347
+------------------------
+training epoch: 12
+architecture loss: 0.035333301872015
+model loss: 0.03161734715104103
+Validation score is: 0.0311
+------------------------
+training epoch: 13
+architecture loss: 0.03161734715104103
+model loss: 0.02834857627749443
+Validation score is: 0.0280
+------------------------
+training epoch: 14
+architecture loss: 0.02834857627749443
+model loss: 0.025475580245256424
+Validation score is: 0.0252
+------------------------
+training epoch: 15
+architecture loss: 0.025475580245256424
+model loss: 0.022951439023017883
+Validation score is: 0.0227
+------------------------
+training epoch: 16
+architecture loss: 0.022951439023017883
+model loss: 0.020733492448925972
+Validation score is: 0.0205
+------------------------
+training epoch: 17
+architecture loss: 0.020733492448925972
+model loss: 0.01878376677632332
+Validation score is: 0.0186
+------------------------
+training epoch: 18
+architecture loss: 0.01878376677632332
+model loss: 0.017068326473236084
+Validation score is: 0.0169
+------------------------
+training epoch: 19
+architecture loss: 0.017068326473236084
+model loss: 0.015557458624243736
+Validation score is: 0.0154
+------------------------
+training epoch: 20
+architecture loss: 0.015557458624243736
+model loss: 0.014224790036678314
+Validation score is: 0.0141
+------------------------
+training epoch: 21
+architecture loss: 0.014224790036678314
+model loss: 0.013047568500041962
+Validation score is: 0.0130
+------------------------
+training epoch: 22
+architecture loss: 0.013047568500041962
+model loss: 0.012005642987787724
+Validation score is: 0.0119
+------------------------
+training epoch: 23
+architecture loss: 0.012005642987787724
+model loss: 0.011081777513027191
+Validation score is: 0.0110
+------------------------
+training epoch: 24
+architecture loss: 0.011081777513027191
+model loss: 0.010260830633342266
+Validation score is: 0.0102
+------------------------
+training epoch: 25
+architecture loss: 0.010260830633342266
+model loss: 0.009529734030365944
+Validation score is: 0.0095
+------------------------
+training epoch: 26
+architecture loss: 0.009529734030365944
+model loss: 0.008877224288880825
+Validation score is: 0.0088
+------------------------
+training epoch: 27
+architecture loss: 0.008877224288880825
+model loss: 0.008293533697724342
+Validation score is: 0.0083
+------------------------
+training epoch: 28
+architecture loss: 0.008293533697724342
+model loss: 0.007770070340484381
+Validation score is: 0.0077
+------------------------
+training epoch: 29
+architecture loss: 0.007770070340484381
+model loss: 0.007299595512449741
+Validation score is: 0.0073
+------------------------
+training epoch: 30
+architecture loss: 0.007299595512449741
+model loss: 0.006875673774629831
+Validation score is: 0.0069
+------------------------
+training epoch: 31
+architecture loss: 0.006875673774629831
+model loss: 0.006492785643786192
+Validation score is: 0.0065
+------------------------
+training epoch: 32
+architecture loss: 0.006492785643786192
+model loss: 0.0061461469158530235
+Validation score is: 0.0061
+------------------------
+training epoch: 33
+architecture loss: 0.0061461469158530235
+model loss: 0.005831522401422262
+Validation score is: 0.0058
+------------------------
+training epoch: 34
+architecture loss: 0.005831522401422262
+model loss: 0.00554534699767828
+Validation score is: 0.0055
+------------------------
+training epoch: 35
+architecture loss: 0.00554534699767828
+model loss: 0.005284359212964773
+Validation score is: 0.0053
+------------------------
+training epoch: 36
+architecture loss: 0.005284359212964773
+model loss: 0.005045844241976738
+Validation score is: 0.0050
+------------------------
+training epoch: 37
+architecture loss: 0.005045844241976738
+model loss: 0.004827330354601145
+Validation score is: 0.0048
+------------------------
+training epoch: 38
+architecture loss: 0.004827330354601145
+model loss: 0.004626709036529064
+Validation score is: 0.0046
+------------------------
+training epoch: 39
+architecture loss: 0.004626709036529064
+model loss: 0.004442052915692329
+Validation score is: 0.0044
+------------------------
+training epoch: 40
+architecture loss: 0.004442052915692329
+model loss: 0.004271796904504299
+Validation score is: 0.0043
+------------------------
+training epoch: 41
+architecture loss: 0.004271796904504299
+model loss: 0.004114378243684769
+Validation score is: 0.0041
+------------------------
+training epoch: 42
+architecture loss: 0.004114378243684769
+model loss: 0.0039685931988060474
+Validation score is: 0.0040
+------------------------
+training epoch: 43
+architecture loss: 0.0039685931988060474
+model loss: 0.0038332403637468815
+Validation score is: 0.0038
+------------------------
+training epoch: 44
+architecture loss: 0.0038332403637468815
+model loss: 0.0037073586136102676
+Validation score is: 0.0037
+------------------------
+training epoch: 45
+architecture loss: 0.0037073586136102676
+model loss: 0.0035900466609746218
+Validation score is: 0.0036
+------------------------
+training epoch: 46
+architecture loss: 0.0035900466609746218
+model loss: 0.003480464220046997
+Validation score is: 0.0035
+------------------------
+training epoch: 47
+architecture loss: 0.003480464220046997
+model loss: 0.003377891145646572
+Validation score is: 0.0034
+------------------------
+training epoch: 48
+architecture loss: 0.003377891145646572
+model loss: 0.0032817868050187826
+Validation score is: 0.0033
+------------------------
+training epoch: 49
+architecture loss: 0.0032817868050187826
+model loss: 0.0031914322171360254
+Validation score is: 0.0032
+Validation score is: 0.0032
+
+---------- depth 0 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 0
+---- prog 0  :  Start
+---- subm program
+-- weight 0.1046074852347374 | 0.17097073793411255  valid 1  : affine  | 
+-- weight 0.9350104331970215 | 0.3922484517097473  valid 1  : and  | 
+-- weight -1.2406680583953857 | 0.04453239589929581  valid 1  : or  | 
+-- weight 0.9350104331970215 | 0.3922484517097473  valid 1  : equality  | 
+
+
+---------- depth 1 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 1
+---- prog 0  :  affine
+---- prog 1  :  and
+---- subm function1
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- subm function2
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- prog 2  :  or
+---- subm function1
+-- weight -1.2815463542938232 | 0.07155180722475052  valid 1  : affine  | 
+-- weight 1.2815462350845337 | 0.9284481406211853  valid 1  : equality  | 
+
+---- subm function2
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- prog 3  :  equality
+
+---------- depth 2 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+-------- Node 1
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+
+
+
+Train iteration 0 time spend: 1.6260809898376465 
+
+
+---------- depth 0 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 0
+---- prog 0  :  Start
+---- subm program
+-- weight 0.9350104331970215 | 1.0  valid 1  : and  | 
+
+
+---------- depth 1 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 1
+---- prog 0  :  and
+---- subm function1
+-- weight 0.0 | 1.0  valid 1  : affine  | 
+
+---- subm function2
+-- weight 0.0 | 1.0  valid 1  : affine  | 
+
+
+---------- depth 2 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+-------- Node 1
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+
+
+
+after search 
+
+learning rate: 0.045
+------------------------
+training epoch: 0
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 1
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 2
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 3
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 4
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 5
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 6
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 7
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 8
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 9
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 10
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 11
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 12
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 13
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 14
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 15
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 16
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 17
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 18
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+------------------------
+training epoch: 19
+Validation score is: 0.0000
+model loss: 0.0
+validation metric: 0.0
+finish train
+
+best epoch: 19
+time spend: 0.15355777740478516 
+
+
+---------- depth 0 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 0
+---- prog 0  :  Start
+---- subm program
+-- weight 0.1046074852347374 | 0.17097073793411255  valid 1  : affine  | 
+-- weight 0.9350104331970215 | 0.3922484517097473  valid 1  : and  | 
+-- weight -1.2406680583953857 | 0.04453239589929581  valid 1  : or  | 
+-- weight 0.9350104331970215 | 0.3922484517097473  valid 1  : equality  | 
+
+
+---------- depth 1 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 1
+---- prog 0  :  affine
+---- prog 1  :  and
+---- subm function1
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- subm function2
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- prog 2  :  or
+---- subm function1
+-- weight -1.2815463542938232 | 0.07155180722475052  valid 1  : affine  | 
+-- weight 1.2815462350845337 | 0.9284481406211853  valid 1  : equality  | 
+
+---- subm function2
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- prog 3  :  equality
+
+---------- depth 2 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+-------- Node 1
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+Best Program Found:
+Start(and(affine(), affine()))
+data for architecture search
+batch num of train: 1
+batch num of valid: 1
+total num of test: 2
+Train iteration 0 starts 
+
+current depth 0  after 2
+
+> training...
+
+---------- depth 0 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 0
+---- prog 0  :  Start
+---- subm program
+-- weight 0.0 | 0.25  valid 1  : affine  | 
+-- weight 0.0 | 0.25  valid 1  : and  | 
+-- weight 0.0 | 0.25  valid 1  : or  | 
+-- weight 0.0 | 0.25  valid 1  : equality  | 
+
+
+---------- depth 1 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 1
+---- prog 0  :  affine
+---- prog 1  :  and
+---- subm function1
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- subm function2
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- prog 2  :  or
+---- subm function1
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- subm function2
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- prog 3  :  equality
+
+---------- depth 2 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+-------- Node 1
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+number of architecture parameters 12
+number of model parameters 24
+ratio between arch/model parameter is: 0.5
+learning rate: 0.045 | 0.045
+------------------------
+training epoch: 0
+architecture loss: 0.4141167402267456
+model loss: 0.39515095949172974
+Validation score is: 0.3112
+------------------------
+training epoch: 1
+architecture loss: 0.3748396039009094
+model loss: 0.356892466545105
+Validation score is: 0.2856
+------------------------
+training epoch: 2
+architecture loss: 0.3388516306877136
+model loss: 0.3219397962093353
+Validation score is: 0.2616
+------------------------
+training epoch: 3
+architecture loss: 0.30620935559272766
+model loss: 0.2903369963169098
+Validation score is: 0.2394
+------------------------
+training epoch: 4
+architecture loss: 0.27685070037841797
+model loss: 0.26200106739997864
+Validation score is: 0.2191
+------------------------
+training epoch: 5
+architecture loss: 0.2505562901496887
+model loss: 0.23668551445007324
+Validation score is: 0.2004
+------------------------
+training epoch: 6
+architecture loss: 0.22696641087532043
+model loss: 0.21401077508926392
+Validation score is: 0.1833
+------------------------
+training epoch: 7
+architecture loss: 0.20568740367889404
+model loss: 0.19358354806900024
+Validation score is: 0.1675
+------------------------
+training epoch: 8
+architecture loss: 0.18642041087150574
+model loss: 0.17511652410030365
+Validation score is: 0.1530
+------------------------
+training epoch: 9
+architecture loss: 0.16900412738323212
+model loss: 0.1584610491991043
+Validation score is: 0.1398
+------------------------
+training epoch: 10
+architecture loss: 0.15337350964546204
+model loss: 0.14356422424316406
+Validation score is: 0.1280
+------------------------
+training epoch: 11
+architecture loss: 0.1394963562488556
+model loss: 0.1304042637348175
+Validation score is: 0.1176
+------------------------
+training epoch: 12
+architecture loss: 0.1273229569196701
+model loss: 0.11893703788518906
+Validation score is: 0.1084
+------------------------
+training epoch: 13
+architecture loss: 0.11675360798835754
+model loss: 0.10906286537647247
+Validation score is: 0.1005
+------------------------
+training epoch: 14
+architecture loss: 0.10762748122215271
+model loss: 0.10061468929052353
+Validation score is: 0.0936
+------------------------
+training epoch: 15
+architecture loss: 0.09972716867923737
+model loss: 0.09336493164300919
+Validation score is: 0.0875
+------------------------
+training epoch: 16
+architecture loss: 0.09279701113700867
+model loss: 0.08704680949449539
+Validation score is: 0.0820
+------------------------
+training epoch: 17
+architecture loss: 0.08656932413578033
+model loss: 0.08138245344161987
+Validation score is: 0.0768
+------------------------
+training epoch: 18
+architecture loss: 0.08079640567302704
+model loss: 0.07611730694770813
+Validation score is: 0.0718
+------------------------
+training epoch: 19
+architecture loss: 0.07528375834226608
+model loss: 0.07105369865894318
+Validation score is: 0.0669
+------------------------
+training epoch: 20
+architecture loss: 0.06991660594940186
+model loss: 0.06607815623283386
+Validation score is: 0.0621
+------------------------
+training epoch: 21
+architecture loss: 0.06466975063085556
+model loss: 0.061171017587184906
+Validation score is: 0.0573
+------------------------
+training epoch: 22
+architecture loss: 0.05959780886769295
+model loss: 0.05639439821243286
+Validation score is: 0.0529
+------------------------
+training epoch: 23
+architecture loss: 0.05480767786502838
+model loss: 0.051864057779312134
+Validation score is: 0.0487
+------------------------
+training epoch: 24
+architecture loss: 0.05042312294244766
+model loss: 0.04771190136671066
+Validation score is: 0.0451
+------------------------
+training epoch: 25
+architecture loss: 0.04654797166585922
+model loss: 0.04404870420694351
+Validation score is: 0.0419
+------------------------
+training epoch: 26
+architecture loss: 0.04323679953813553
+model loss: 0.04093405231833458
+Validation score is: 0.0393
+------------------------
+training epoch: 27
+architecture loss: 0.04047961160540581
+model loss: 0.03836137056350708
+Validation score is: 0.0372
+------------------------
+training epoch: 28
+architecture loss: 0.038203928619623184
+model loss: 0.03625894710421562
+Validation score is: 0.0354
+------------------------
+training epoch: 29
+architecture loss: 0.036291588097810745
+model loss: 0.03450864553451538
+Validation score is: 0.0338
+------------------------
+training epoch: 30
+architecture loss: 0.03460666909813881
+model loss: 0.03297342360019684
+Validation score is: 0.0323
+------------------------
+training epoch: 31
+architecture loss: 0.033024176955223083
+model loss: 0.03152710199356079
+Validation score is: 0.0308
+------------------------
+training epoch: 32
+architecture loss: 0.03145378455519676
+model loss: 0.03007872961461544
+Validation score is: 0.0292
+------------------------
+training epoch: 33
+architecture loss: 0.029853466898202896
+model loss: 0.028586186468601227
+Validation score is: 0.0277
+------------------------
+training epoch: 34
+architecture loss: 0.028230704367160797
+model loss: 0.027058109641075134
+Validation score is: 0.0261
+------------------------
+training epoch: 35
+architecture loss: 0.02663148008286953
+model loss: 0.0255422405898571
+Validation score is: 0.0247
+------------------------
+training epoch: 36
+architecture loss: 0.025119895115494728
+model loss: 0.02410515397787094
+Validation score is: 0.0233
+------------------------
+training epoch: 37
+architecture loss: 0.023755494505167007
+model loss: 0.022808220237493515
+Validation score is: 0.0222
+------------------------
+training epoch: 38
+architecture loss: 0.02257409878075123
+model loss: 0.021689249202609062
+Validation score is: 0.0212
+------------------------
+training epoch: 39
+architecture loss: 0.021578559651970863
+model loss: 0.020752057433128357
+Validation score is: 0.0204
+------------------------
+training epoch: 40
+architecture loss: 0.02074015885591507
+model loss: 0.01996859908103943
+Validation score is: 0.0197
+------------------------
+training epoch: 41
+architecture loss: 0.020009268075227737
+model loss: 0.019289277493953705
+Validation score is: 0.0191
+------------------------
+training epoch: 42
+architecture loss: 0.019330482929944992
+model loss: 0.018658077344298363
+Validation score is: 0.0184
+------------------------
+training epoch: 43
+architecture loss: 0.018657777458429337
+model loss: 0.018029041588306427
+Validation score is: 0.0177
+------------------------
+training epoch: 44
+architecture loss: 0.01796666346490383
+model loss: 0.017377570271492004
+Validation score is: 0.0170
+------------------------
+training epoch: 45
+architecture loss: 0.017257729545235634
+model loss: 0.01670384779572487
+Validation score is: 0.0163
+------------------------
+training epoch: 46
+architecture loss: 0.016552014276385307
+model loss: 0.016030047088861465
+Validation score is: 0.0157
+------------------------
+training epoch: 47
+architecture loss: 0.015881115570664406
+model loss: 0.01538817584514618
+Validation score is: 0.0151
+------------------------
+training epoch: 48
+architecture loss: 0.015273403376340866
+model loss: 0.014807209372520447
+Validation score is: 0.0146
+------------------------
+training epoch: 49
+architecture loss: 0.014743437990546227
+model loss: 0.014302387833595276
+Validation score is: 0.0141
+Validation score is: 0.0141
+
+---------- depth 0 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 0
+---- prog 0  :  Start
+---- subm program
+-- weight -1.4471352100372314 | 0.021898631006479263  valid 1  : affine  | 
+-- weight 1.8247309923171997 | 0.5772586464881897  valid 1  : and  | 
+-- weight -0.6937316656112671 | 0.04651746153831482  valid 1  : or  | 
+-- weight 1.336655855178833 | 0.35432523488998413  valid 1  : equality  | 
+
+
+---------- depth 1 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 1
+---- prog 0  :  affine
+---- prog 1  :  and
+---- subm function1
+-- weight -1.4961429834365845 | 0.04777557775378227  valid 1  : affine  | 
+-- weight 1.4961433410644531 | 0.9522244334220886  valid 1  : equality  | 
+
+---- subm function2
+-- weight -1.0899956226348877 | 0.10156174749135971  valid 1  : affine  | 
+-- weight 1.0899953842163086 | 0.8984382152557373  valid 1  : equality  | 
+
+---- prog 2  :  or
+---- subm function1
+-- weight -0.8159024715423584 | 0.16358326375484467  valid 1  : affine  | 
+-- weight 0.8159024715423584 | 0.8364167809486389  valid 1  : equality  | 
+
+---- subm function2
+-- weight -1.362661600112915 | 0.06149552762508392  valid 1  : affine  | 
+-- weight 1.3626617193222046 | 0.9385044574737549  valid 1  : equality  | 
+
+---- prog 3  :  equality
+
+---------- depth 2 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+-------- Node 1
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+
+
+
+Train iteration 0 time spend: 1.5713858604431152 
+
+
+---------- depth 0 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 0
+---- prog 0  :  Start
+---- subm program
+-- weight 1.8247309923171997 | 1.0  valid 1  : and  | 
+
+
+---------- depth 1 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 1
+---- prog 0  :  and
+---- subm function1
+-- weight 1.4961433410644531 | 1.0  valid 1  : equality  | 
+
+---- subm function2
+-- weight 1.0899953842163086 | 1.0  valid 1  : equality  | 
+
+
+---------- depth 2 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  equality
+-------- Node 1
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  equality
+
+
+
+after search 
+
+learning rate: 0.045
+------------------------
+training epoch: 0
+Validation score is: 0.0021
+model loss: 0.00015434024680871516
+validation metric: 0.002116978168487549
+------------------------
+training epoch: 1
+Validation score is: 0.0002
+model loss: 0.0021214724984019995
+validation metric: 0.0002148449420928955
+------------------------
+training epoch: 2
+Validation score is: 0.0004
+model loss: 0.00021489111531991512
+validation metric: 0.00039261579513549805
+------------------------
+training epoch: 3
+Validation score is: 0.0011
+model loss: 0.0003927700163330883
+validation metric: 0.0011404156684875488
+------------------------
+training epoch: 4
+Validation score is: 0.0008
+model loss: 0.0011417182395234704
+validation metric: 0.0007746517658233643
+------------------------
+training epoch: 5
+Validation score is: 0.0001
+model loss: 0.0007752524688839912
+validation metric: 0.00013870000839233398
+------------------------
+training epoch: 6
+Validation score is: 0.0001
+model loss: 0.00013871924602426589
+validation metric: 5.933642387390137e-05
+------------------------
+training epoch: 7
+Validation score is: 0.0004
+model loss: 5.933994543738663e-05
+validation metric: 0.0004169344902038574
+------------------------
+training epoch: 8
+Validation score is: 0.0006
+model loss: 0.00041710841469466686
+validation metric: 0.0005797147750854492
+------------------------
+training epoch: 9
+Validation score is: 0.0004
+model loss: 0.0005800510989502072
+validation metric: 0.000373154878616333
+------------------------
+training epoch: 10
+Validation score is: 0.0001
+model loss: 0.0003732941986527294
+validation metric: 0.00010818243026733398
+------------------------
+training epoch: 11
+Validation score is: 0.0001
+model loss: 0.0001081941372831352
+validation metric: 5.874037742614746e-05
+------------------------
+training epoch: 12
+Validation score is: 0.0002
+model loss: 5.874382986803539e-05
+validation metric: 0.00018474459648132324
+------------------------
+training epoch: 13
+Validation score is: 0.0003
+model loss: 0.000184778735274449
+validation metric: 0.00027680397033691406
+------------------------
+training epoch: 14
+Validation score is: 0.0002
+model loss: 0.0002768806298263371
+validation metric: 0.0002333223819732666
+------------------------
+training epoch: 15
+Validation score is: 0.0001
+model loss: 0.00023337683524005115
+validation metric: 0.0001283586025238037
+------------------------
+training epoch: 16
+Validation score is: 0.0001
+model loss: 0.00012837507529184222
+validation metric: 7.021427154541016e-05
+------------------------
+training epoch: 17
+Validation score is: 0.0001
+model loss: 7.021920464467257e-05
+validation metric: 7.903575897216797e-05
+------------------------
+training epoch: 18
+Validation score is: 0.0001
+model loss: 7.904200901975855e-05
+validation metric: 0.00011038780212402344
+------------------------
+training epoch: 19
+Validation score is: 0.0001
+model loss: 0.0001103999893530272
+validation metric: 0.00012362003326416016
+finish train
+
+best epoch: 11
+time spend: 0.13331937789916992 
+
+
+---------- depth 0 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 0
+---- prog 0  :  Start
+---- subm program
+-- weight -1.4471352100372314 | 0.021898631006479263  valid 1  : affine  | 
+-- weight 1.8247309923171997 | 0.5772586464881897  valid 1  : and  | 
+-- weight -0.6937316656112671 | 0.04651746153831482  valid 1  : or  | 
+-- weight 1.336655855178833 | 0.35432523488998413  valid 1  : equality  | 
+
+
+---------- depth 1 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 1
+---- prog 0  :  affine
+---- prog 1  :  and
+---- subm function1
+-- weight -1.4961429834365845 | 0.04777557775378227  valid 1  : affine  | 
+-- weight 1.4961433410644531 | 0.9522244334220886  valid 1  : equality  | 
+
+---- subm function2
+-- weight -1.0899956226348877 | 0.10156174749135971  valid 1  : affine  | 
+-- weight 1.0899953842163086 | 0.8984382152557373  valid 1  : equality  | 
+
+---- prog 2  :  or
+---- subm function1
+-- weight -0.8159024715423584 | 0.16358326375484467  valid 1  : affine  | 
+-- weight 0.8159024715423584 | 0.8364167809486389  valid 1  : equality  | 
+
+---- subm function2
+-- weight -1.362661600112915 | 0.06149552762508392  valid 1  : affine  | 
+-- weight 1.3626617193222046 | 0.9385044574737549  valid 1  : equality  | 
+
+---- prog 3  :  equality
+
+---------- depth 2 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+-------- Node 1
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+Best Program Found:
+Start(and(equality(), equality()))
+data for architecture search
+batch num of train: 1
+batch num of valid: 1
+total num of test: 3
+Train iteration 0 starts 
+
+current depth 0  after 2
+
+> training...
+
+---------- depth 0 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 0
+---- prog 0  :  Start
+---- subm program
+-- weight 0.0 | 0.25  valid 1  : affine  | 
+-- weight 0.0 | 0.25  valid 1  : and  | 
+-- weight 0.0 | 0.25  valid 1  : or  | 
+-- weight 0.0 | 0.25  valid 1  : equality  | 
+
+
+---------- depth 1 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 1
+---- prog 0  :  affine
+---- prog 1  :  and
+---- subm function1
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- subm function2
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- prog 2  :  or
+---- subm function1
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- subm function2
+-- weight 0.0 | 0.5  valid 1  : affine  | 
+-- weight 0.0 | 0.5  valid 1  : equality  | 
+
+---- prog 3  :  equality
+
+---------- depth 2 ------------
+-------- Node 0
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+-------- Node 1
+------ type sign contain ('atom', 'atom', 3, 1)    debug 2
+---- prog 0  :  affine
+---- prog 1  :  equality
+number of architecture parameters 12
+number of model parameters 24
+ratio between arch/model parameter is: 0.5
+learning rate: 0.045 | 0.045
+------------------------
+training epoch: 0
+architecture loss: 0.46253839135169983
+model loss: 0.44690608978271484
+Validation score is: 0.3289
+------------------------
+training epoch: 1
+architecture loss: 0.41240963339805603
+model loss: 0.3971342146396637
+Validation score is: 0.2975
+------------------------
+training epoch: 2
+architecture loss: 0.36688530445098877
+model loss: 0.352125883102417
+Validation score is: 0.2682
+------------------------
+training epoch: 3
+architecture loss: 0.3261241316795349
+model loss: 0.3120008707046509
+Validation score is: 0.2409
+------------------------
+training epoch: 4
+architecture loss: 0.2894475758075714
+model loss: 0.2759869396686554
+Validation score is: 0.2155
+------------------------
+training epoch: 5
+architecture loss: 0.25618287920951843
+model loss: 0.2433503121137619
+Validation score is: 0.1920
+------------------------
+training epoch: 6
+architecture loss: 0.2260243445634842
+model loss: 0.21378767490386963
+Validation score is: 0.1704
+------------------------
+training epoch: 7
+architecture loss: 0.19881755113601685
+model loss: 0.18716935813426971
+Validation score is: 0.1511
+------------------------
+training epoch: 8
+architecture loss: 0.17475832998752594
+model loss: 0.16372188925743103
+Validation score is: 0.1346
+------------------------
+training epoch: 9
+architecture loss: 0.15425385534763336
+model loss: 0.14388048648834229
+Validation score is: 0.1212
+------------------------
+training epoch: 10
+architecture loss: 0.13754259049892426
+model loss: 0.1278967410326004
+Validation score is: 0.1108
+------------------------
+training epoch: 11
+architecture loss: 0.1244179829955101
+model loss: 0.11555401235818863
+Validation score is: 0.1028
+------------------------
+training epoch: 12
+architecture loss: 0.11422065645456314
+model loss: 0.10616358369588852
+Validation score is: 0.0965
+------------------------
+training epoch: 13
+architecture loss: 0.10610511898994446
+model loss: 0.0988435447216034
+Validation score is: 0.0912
+------------------------
+training epoch: 14
+architecture loss: 0.09934058040380478
+model loss: 0.09283363819122314
+Validation score is: 0.0864
+------------------------
+training epoch: 15
+architecture loss: 0.0934024229645729
+model loss: 0.08759140968322754
+Validation score is: 0.0819
+------------------------
+training epoch: 16
+architecture loss: 0.08787678927183151
+model loss: 0.08269347995519638
+Validation score is: 0.0772
+------------------------
+training epoch: 17
+architecture loss: 0.08235321193933487
+model loss: 0.07772404700517654
+Validation score is: 0.0720
+------------------------
+training epoch: 18
+architecture loss: 0.07644164562225342
+model loss: 0.07229051738977432
+Validation score is: 0.0662
+------------------------
+training epoch: 19
+architecture loss: 0.0699291005730629
+model loss: 0.066183902323246
+Validation score is: 0.0598
+------------------------
+training epoch: 20
+architecture loss: 0.06293395906686783
+model loss: 0.059534329921007156
+Validation score is: 0.0533
+------------------------
+training epoch: 21
+architecture loss: 0.05588832125067711
+model loss: 0.05279027298092842
+Validation score is: 0.0472
+------------------------
+training epoch: 22
+architecture loss: 0.049351248890161514
+model loss: 0.046526696532964706
+Validation score is: 0.0420
+------------------------
+training epoch: 23
+architecture loss: 0.04377390816807747
+model loss: 0.04120354726910591
+Validation score is: 0.0378
+------------------------
+training epoch: 24
+architecture loss: 0.03933849558234215
+model loss: 0.037005823105573654
+Validation score is: 0.0346
+------------------------
+training epoch: 25
+architecture loss: 0.03595608472824097
+model loss: 0.03384312614798546
+Validation score is: 0.0322
+------------------------
+training epoch: 26
+architecture loss: 0.03340071067214012
+model loss: 0.031487807631492615
+Validation score is: 0.0304
+------------------------
+training epoch: 27
+architecture loss: 0.03145214170217514
+model loss: 0.029719999060034752
+Validation score is: 0.0290
+------------------------
+training epoch: 28
+architecture loss: 0.029946057125926018
+model loss: 0.028377128764986992
+Validation score is: 0.0279
+------------------------
+training epoch: 29
+architecture loss: 0.028739094734191895
+model loss: 0.02731720171868801
+Validation score is: 0.0269
+------------------------
+training epoch: 30
+architecture loss: 0.02766307257115841
+model loss: 0.02637293003499508
+Validation score is: 0.0259
+------------------------
+training epoch: 31
+architecture loss: 0.02653232216835022
+model loss: 0.025358887389302254
+Validation score is: 0.0246
+------------------------
+training epoch: 32
+architecture loss: 0.025208190083503723
+model loss: 0.024137161672115326
+Validation score is: 0.0231
+------------------------
+training epoch: 33
+architecture loss: 0.02365603856742382
+model loss: 0.022675177082419395
+Validation score is: 0.0215
+------------------------
+training epoch: 34
+architecture loss: 0.02194596827030182
+model loss: 0.021044312044978142
+Validation score is: 0.0198
+------------------------
+training epoch: 35
+architecture loss: 0.020206211134791374
+model loss: 0.019375218078494072
+Validation score is: 0.0182
+------------------------
+training epoch: 36
+architecture loss: 0.018577544018626213
+model loss: 0.017809785902500153
+Validation score is: 0.0168
+------------------------
+training epoch: 37
+architecture loss: 0.017187466844916344
+model loss: 0.01647728681564331
+Validation score is: 0.0158
+------------------------
+training epoch: 38
+architecture loss: 0.016132600605487823
+model loss: 0.015475342981517315
+Validation score is: 0.0152
+------------------------
+training epoch: 39

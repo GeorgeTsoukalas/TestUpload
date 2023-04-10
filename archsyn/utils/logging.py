@@ -237,7 +237,7 @@ def smoothed_numerical_invariant_new(params): # created 2/2
     new_weights = [weight/biggest_weight for weight in weights] # TODO: check if this should be abs (but I don't know if all negative happens in practice)
     # print("New_weights are ", new_weights)
     approximations = []
-    N = 4 # this is how precise we want to try for the approximation
+    N = 2 # this is how precise we want to try for the approximation
     for new_weight in new_weights:
         closest_approx_values = (-100, -100)
         closest_approx = 1000

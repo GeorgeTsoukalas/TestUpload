@@ -94,7 +94,7 @@ def parse_args():
                         help="structural penalty scaling for structural cost of edges")
     parser.add_argument('--ite_beta', type=float, required=False, default=1.0,
                         help="beta tuning parameter for if-then-else")
-    parser.add_argument('--sem', type=str, required=False, choices=["arith","minmax"], default="arith",
+    parser.add_argument('--sem', type=str, required=False, choices=["arith","minmax","Lukasiewicz"], default="arith",
                         help="discrete semantics approximation")
 
     # cmd_args for training
@@ -409,7 +409,7 @@ def evaluate(algorithm, graph, train_loader, train_config, device):
         metric = algorithm.eval_graph(graph, validset, train_config['evalfxn'], train_config['num_labels'], device)
     return metric
 
-def run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr, i, pre_cooked_data, random_seeding = True):
+def run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr, i, pre_cooked_data, top_k, random_seeding = True):
     # added stuff for cln2inv
     fname = str(problem_num) + '.c'
     csvname = str(problem_num) + '.csv'
@@ -459,8 +459,9 @@ def run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr,
         #return torch.mean(torch.hstack(augmented_out))
     
         #LOG VERSION OF LOSS
+        eps = 1e-6 # I believe this is the same as the japan paper
         augmented_out = [out[l][1] if labels[l] == 1 else (torch.ones(1).to(device) - out[l][0] if labels[l] == 2 else torch.ones(1).to(device) - (torch.ones(1).to(device) - out[l][1])*out[l][0]) for l in range(len(out))]
-        return torch.tensor(-1).to(device) * torch.mean(torch.log(torch.hstack(augmented_out))) 
+        return torch.tensor(-1).to(device) * torch.mean(torch.log(torch.hstack(augmented_out) + eps)) 
 
     def lossfxn_wrapper(out, labels):
         return lossfxn_t(out, labels).to(device)
@@ -551,7 +552,7 @@ def run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr,
             #else: # then the datapoint needs to be true, actually
             #    train_data.append([[-1000. for i in env], [float(result_element) for result_element in result[3]]])
             #    train_labels.append([1.])
-    while verification_iter < 500:
+    while verification_iter < 50:
         if wait:
             time.sleep(2)
         # Initialize program graph
@@ -570,6 +571,8 @@ def run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr,
         algorithm = NAS(frontier_capacity=cmd_args.frontier_capacity)
         iteri = 0
         partition_num = 0
+        best_program_holder = 0
+        num_data_missed = 1000 # TODO: Make this more heuristically determined
         all_graphs = [[0, program_graph]]
         print("Length of training data is ", len(train_data), " TRAINING DATA IS !!!!", train_data)
         working_params = []
@@ -692,7 +695,6 @@ def run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr,
         
             # Ah, but now I've forgotten the structure!
             # First let me take the cartesian product
-            # TODO: make sure there's no problem with depth 3 invaraints and too much nesting!
             all_smoothed_param_choices = itertools.product(*smoothed_params) # this is an iterator - don't call list on it or it will be used up!
             print("Now moving to nonsmoothed")
             nonsmoothed_params = get_all_params(best_program)
@@ -734,7 +736,8 @@ def run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr,
                 print("The missed are ", Missed, " and the training data is ", train_data, " with labels ", train_labels)
                 if len(Missed) == 0:
                     is_non_smoothed_correct = True
-            working_params = [] # if empty, none work!
+            #working_params = [] # if empty, none work!
+            found_solution = False
             print("*** SMOOTHED CASE ATTEMPTS ***")            
             for param_choice in all_smoothed_param_choices:
                 # If I build the program in the exact same way I got the parameter order, the structure should be preserved.
@@ -744,15 +747,19 @@ def run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr,
                 func = lambda_program_generator_new(best_program, list_param_choice)
                 Missed_Smooth = function_accuracy(func, train_data, train_labels)
                 print(len(Missed_Smooth), " out of ", len(train_data), "examples missed and they are ", Missed_Smooth)
-                #print("The missed are ", Missed_Smooth, " and the training data is ", train_data)
+                if len(Missed_Smooth) < num_data_missed:
+                    num_data_missed = len(Missed_Smooth)
+                    best_program_holder = best_program # TODO: Make sure there is no referencing issue here
+                    working_params = [x for x in copied_list_param_choice]
                 if len(Missed_Smooth) == 0:
                     print("This is a solution!")
+                    found_solution = True
                     working_params = copied_list_param_choice
                     #print(working_params)
                     #print(list_param_choice)
                     break
             #print(working_params)
-            if (working_params != []):
+            if found_solution:
                 print("it's breaking out!")
                 break
             elif is_non_smoothed_correct:
@@ -762,7 +769,7 @@ def run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr,
                     working_params = [[math.floor(el*1000.)/1000. for el in x] for x in list(param_choice)] 
                     print(working_params)
                 break
-            else:
+            elif iteri <= top_k: # WHAT IS THE CONDITION
                 print("!!!! No solution was found here, moving to the next structure !!!!")
                 # first, check that the correct invariant works on all examples
                 if problem_num in cln2inv_invariant_dictionary:
@@ -791,88 +798,21 @@ def run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr,
                             # Returned result, learning to an empty intermediate result return, which canno bt  concatenated
                             all_graphs.append([metric, subgraph])
                 heapq.heapify(all_graphs)
+            else:  # USE THE BEST PROGRAM FOUND FROM THE TOP_K FIRDST PRORRAMS SEARCHED``
+                print("Have exceeded the top_k choices and now using best smoothed program found")
+                #assert False, "This does indeed do something"
+                #TODO: Keep some tracker here of how many times this executes, this is good information to have
+                break
             iteri += 1
             print("Length of training data is ", len(train_data), " TRAINING DATA IS !!!!", train_data)
             print("number of partitions: ", partition_num)
-
-            if False: # Deprecated
-                def lambda_program_generator(program, Smoothed = False):
-                    if program.name == "affine":
-                        if Smoothed:
-                            vals = smoothed_numerical_invariant(program.parameters)
-                            #print("Affine smoothed weights are ", vals)
-                            return lambda *args: sum(val*arg for val,arg in zip(vals, args)) + vals[-1] >= 0 # I think if vals is too long, the zip will ignore it (I checked indeed it does)
-                        else:
-                            new_weights = [float(x.detach()) for x in program.parameters["weights"][0]] + [float(program.parameters["bias"][0].detach())]
-                            return lambda *args: sum(val*arg for val,arg in zip(new_weights, args)) + new_weights[-1] >= 0
-                    elif program.name == "equality":
-                        if Smoothed:
-                            vals = smoothed_numerical_invariant(program.parameters)
-                            #print("Equality smoothed weights are ", vals)
-                            return lambda *args: sum(val*arg for val,arg in zip(vals, args)) + vals[-1] == 0
-                        else:
-                            new_weights = [float(x.detach()) for x in program.parameters["weights"][0]] + [float(program.parameters["bias"][0].detach())]
-                            return lambda *args: sum(val*arg for val,arg in zip(new_weights, args)) + new_weights[-1] == 0
-                    elif program.name == "and": #and
-                        return lambda *args : (lambda_program_generator(list(program.submodules.items())[0][1], Smoothed)(*args) and lambda_program_generator(list(program.submodules.items())[1][1], Smoothed)(*args))
-                    else: # or
-                        return lambda *args : (lambda_program_generator(list(program.submodules.items())[0][1], Smoothed)(*args) or lambda_program_generator(list(program.submodules.items())[1][1], Smoothed)(*args))
-                
-                func = lambda_program_generator(best_program, False)
-                func_smoothed = lambda_program_generator(best_program, True)
-                print(func)
-                print(func_smoothed)
-                Missed = []
-                for datum in zip(train_data,train_labels): # this is for checking that the output function actually works before smoothing
-                    if datum[1][0] == 2.0: # false
-                        if func(*(datum[0][0])):
-                            Missed.append(list(datum[0]))
-                    elif datum[1][0] == 1.0: # true
-                        if not func(*(datum[0][1])):
-                            Missed.append(list(datum[0]))
-                    elif datum[1][0] == 3.0: #implication_example
-                        if not ((not func(*(datum[0][0]))) or (func(*(datum[0][1])))):
-                            Missed.append(list(datum[0])) 
-                Missed_Smooth = []
-                for datum in zip(train_data,train_labels):  # form: ([[x,y],[w,z]], [label])
-                    #print("Datum is ", datum, " and function smoothed value is ", func_smoothed(*datum[0][int(2-datum[1][0])]))
-                    if datum[1][0] == 2.0: # false
-                        if func_smoothed(*(datum[0][0])):
-                            Missed_Smooth.append(list(datum[0]))
-                    elif datum[1][0] == 1.0:
-                        if not func_smoothed(*(datum[0][1])):
-                            Missed_Smooth.append(list(datum[0]))
-                    elif datum[1][0] == 3.0:
-                        if not ((not func_smoothed(*(datum[0][0]))) or (func_smoothed(*(datum[0][1])))):
-                            Missed_Smooth.append(list(datum[0])) 
-                print("Length of training data is ", len(train_data), " TRAINING DATA IS !!!!", train_data)
-                print("Number missed w/o smooth is ", len(Missed), " with missed examples", Missed)
-                print("Number missed w/ smooth is ", len(Missed_Smooth) , " with missed examples ", Missed_Smooth)
-                if wait:
-                    time.sleep(3) #TODO: for viewing
-                if len(Missed_Smooth) == 0:
-                    log_and_print("Found a solution!!!!!:")
-                    print_program2(best_program, env, smoothed = True)
-                    break
-            elif False: # Moved
-                if len(Missed) == 0 and len(Missed_Smooth) > 0:
-                    pass
-                    #assert False # smoothing ruins it!
-                print("Missed smooth examples are", Missed_Smooth)
-                train_loader = IOExampleLoader(train_data, train_labels, batch_size=batch_size, shuffle=False)
-                for pair in all_graphs:
-                    pair[0] = evaluate(algorithm, pair[1], train_loader, train_config, device)
-                splited_subgraph = program_graph.partition(cmd_args.top_left, cmd_args.GM)
-                partition_num += 1
-                if splited_subgraph is not None:
-                    for subgraph in splited_subgraph:
-                        all_graphs.append([evaluate(algorithm, subgraph, train_loader, train_config, device), subgraph])
-                heapq.heapify(all_graphs)
+        
+            
         #print("Beginning to check invariant")
         working_params_copy = [x for x in working_params]
         print("The working params copy is ", working_params_copy)
-        func_smoothed = lambda_program_generator_new(best_program, working_params_copy) # so many referencing issues
-        inv_smt = invariant_from_program_new(best_program, working_params, env)
+        func_smoothed = lambda_program_generator_new(best_program_holder, working_params_copy) # so many referencing issues
+        inv_smt = invariant_from_program_new(best_program_holder, working_params, env)
         print("Invaraint smt is ", inv_smt)
         result = invariantChecker.check_cln([inv_smt], env)
         print("The result was", result)
@@ -904,6 +844,7 @@ def run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr,
 
         
         verification_iter+=1
+    assert False, "Did not solve after 50 verification iterations"
     return "Did not solve", "", verification_iter
 
 
@@ -937,11 +878,12 @@ def load_spreadsheet_data_test(problem_num, env): # While I am not 100% sure, I 
 
 if __name__ == '__main__':
     cmd_args = parse_args()
-    num_epochs = 50
-    max_depth = 2
+    num_epochs = 35
+    max_depth = 3
     batch_size = 50
     lr = 0.045
-    random_seeding = False # False for no random seed 
+    top_k = 5 # This is 
+    random_seeding = True # False for no random seed 
     pre_cooked_data = False # testing to see what 
     problem_num = cmd_args.problem_num
     #env = variable_dictionary[problem_num]
@@ -956,7 +898,7 @@ if __name__ == '__main__':
             unsolved_probs[p_num] = []
         for p_num in [1, 100, 101, 106, 108, 11, 110, 111, 112, 113, 118, 119, 12, 120, 121, 122, 123, 124, 125, 126, 127, 128, 13, 14, 16, 18, 2, 20, 21, 22, 23, 24, 25, 26, 27, 30, 31, 32, 35, 36, 4, 44, 48, 51, 61, 62, 63, 7, 70, 72, 75, 77, 79, 8, 88, 9, 93, 94]: # these 58 are the ones which there is actually spreadsheet data for
             try:
-                solved, inv_string, num_iter = run_on_problem(p_num, cmd_args, num_epochs, max_depth, batch_size, lr, 1, pre_cooked_data, random_seeding) # set to 1, the leastnuclear option here
+                solved, inv_string, num_iter = run_on_problem(p_num, cmd_args, num_epochs, max_depth, batch_size, lr, 1, pre_cooked_data, top_k, random_seeding) # set to 1, the leastnuclear option here
                 print(solved)
                 print(inv_string)
                 print(num_iter)
@@ -978,7 +920,7 @@ if __name__ == '__main__':
         #try:
         time1 = time.time()
         for i in [1]:#[4,3,2,1]:
-            solved, inv_string, num_iter = run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr, i, False, random_seeding)
+            solved, inv_string, num_iter = run_on_problem(problem_num, cmd_args, num_epochs, max_depth, batch_size, lr, i, False, top_k, random_seeding)
             print(solved)
             print(inv_string)
             print(num_iter)
@@ -993,31 +935,38 @@ if __name__ == '__main__':
         num_solved = 0
         solved_probs = []
         unsolved_probs = {} # here I insert the error messages
+        probs_times = {}
         for p_num in range(1,134):
             unsolved_probs[p_num] = []
+            unsolved_probs_times[p_num] = [0]
         for p_num in range(1,134): #[1, 3, 4, 5, 6, 16, 17, 18, 19, 20, 21, 22, 23, 24, 28, 29, 33, 34, 36, 59, 63, 64, 65, 66, 67, 68, 69, 70, 83, 84, 85, 86, 93, 94, 96, 100, 101, 102, 103, 104, 105, 107, 109, 110, 111, 112, 113, 118, 119, 120, 121, 122, 123, 125, 126, 127, 130, 131]: #range(1, 134): # all code2inv programs
             if p_num in [16, 26, 27, 31, 32, 61, 62, 72, 75, 106]:
                 continue # unsolvable so we skip
             #if not (p_num in [2, 7, 8, 9, 10, 11, 12, 13, 14, 25, 30, 35, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 60, 71, 73, 74, 76, 78, 79, 81, 82, 87, 88, 89, 90, 91, 92, 99, 114, 115, 116, 117, 124, 132, 133]):
-            if True:#not (p_num in [7, 8, 9, 11, 12, 13, 14, 25, 30, 35, 37, 38, 39, 40, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 53, 55, 56, 57, 58, 60, 71, 73, 74, 76, 78, 79, 81, 82, 132]):
+            if True: #not p_num in [5,6, 65, 77, 85, 110, 111, 113, 118, 119, 121, 122, 123, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 22, 25, 28, 29, 30, 33, 34, 35, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 63, 64, 67, 68, 69, 71, 73, 74, 76, 78, 79, 80, 81, 82, 84, 86, 87, 88, 89, 90, 91, 92, 95, 96, 97, 98, 99, 100, 101, 102, 104, 105, 107, 108, 114, 115, 116, 117, 124, 125, 126, 127, 128, 129, 132, 133]:#not (p_num in [7, 8, 9, 11, 12, 13, 14, 25, 30, 35, 37, 38, 39, 40, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 53, 55, 56, 57, 58, 60, 71, 73, 74, 76, 78, 79, 81, 82, 132]):
                 print("Have solved ", num_solved, " / ", p_num - 1)
                 print("Now running on problem number ", p_num)
                 #time.sleep(1)
                 for i in [1]:#[4,3,2,1]:
                     for attempt in [1]:#[1,2,3,4,5,6,7,8,9,10]:
-                        try:
-                            solved, inv_string, num_iter = run_on_problem(p_num, cmd_args, num_epochs, max_depth, batch_size, lr, i, False, random_seeding)
-                            print(solved)
-                            print(inv_string)
-                            print(num_iter)
-                            if solved == "Solved!":
-                                num_solved+=1
-                                solved_probs.append(p_num)
-                                invariant_dict[p_num] = inv_string
-                                break
-                        except Exception as e:
-                            print("An error occurred: ", str(e)) # an empty message means smoothing error
-                            unsolved_probs[p_num] += [str(e)]
+                        for depth in [2,3]:
+                            try:
+                                time3 = time.time()
+                                solved, inv_string, num_iter = run_on_problem(p_num, cmd_args, num_epochs, depth, batch_size, lr, i, False, top_k, random_seeding)
+                                time4 = time.time()
+                                print(solved)
+                                print(inv_string)
+                                print(num_iter)
+                                unsolved_probs_times[p_num][0] += time4 - time3
+                                if solved == "Solved!":
+                                    num_solved+=1
+                                    solved_probs.append(p_num)
+                                    invariant_dict[p_num] = inv_string
+                                    #unsolved_probs_times[p_num] = time2 - time1
+                                    break
+                            except Exception as e:
+                                print("An error occurred: ", str(e)) # an empty message means smoothing error
+                                unsolved_probs[p_num] += [str(e)]
                 #time.sleep(5)
             #else:
             #    solved_probs.append(p_num)
@@ -1025,6 +974,7 @@ if __name__ == '__main__':
         print(solved_probs)
         print(num_solved)
         print(invariant_dict)
+        print("Problem times are ", probs_times)
         print("unsolved probs are ", unsolved_probs)
         time2 = time.time()
         print("Running on all programs took ", time2 - time1, " seconds") 
@@ -1419,4 +1369,76 @@ if False: #if __name__ == '__main__':
             assert False # have found a solution!
         elif result[2] == "loop": # we have an implication example, just add it into the training data
             train_data.append(result[3])
- 
+            if False: # Deprecated
+                def lambda_program_generator(program, Smoothed = False):
+                    if program.name == "affine":
+                        if Smoothed:
+                            vals = smoothed_numerical_invariant(program.parameters)
+                            #print("Affine smoothed weights are ", vals)
+                            return lambda *args: sum(val*arg for val,arg in zip(vals, args)) + vals[-1] >= 0 # I think if vals is too long, the zip will ignore it (I checked indeed it does)
+                        else:
+                            new_weights = [float(x.detach()) for x in program.parameters["weights"][0]] + [float(program.parameters["bias"][0].detach())]
+                            return lambda *args: sum(val*arg for val,arg in zip(new_weights, args)) + new_weights[-1] >= 0
+                    elif program.name == "equality":
+                        if Smoothed:
+                            vals = smoothed_numerical_invariant(program.parameters)
+                            #print("Equality smoothed weights are ", vals)
+                            return lambda *args: sum(val*arg for val,arg in zip(vals, args)) + vals[-1] == 0
+                        else:
+                            new_weights = [float(x.detach()) for x in program.parameters["weights"][0]] + [float(program.parameters["bias"][0].detach())]
+                            return lambda *args: sum(val*arg for val,arg in zip(new_weights, args)) + new_weights[-1] == 0
+                    elif program.name == "and": #and
+                        return lambda *args : (lambda_program_generator(list(program.submodules.items())[0][1], Smoothed)(*args) and lambda_program_generator(list(program.submodules.items())[1][1], Smoothed)(*args))
+                    else: # or
+                        return lambda *args : (lambda_program_generator(list(program.submodules.items())[0][1], Smoothed)(*args) or lambda_program_generator(list(program.submodules.items())[1][1], Smoothed)(*args))
+                
+                func = lambda_program_generator(best_program, False)
+                func_smoothed = lambda_program_generator(best_program, True)
+                print(func)
+                print(func_smoothed)
+                Missed = []
+                for datum in zip(train_data,train_labels): # this is for checking that the output function actually works before smoothing
+                    if datum[1][0] == 2.0: # false
+                        if func(*(datum[0][0])):
+                            Missed.append(list(datum[0]))
+                    elif datum[1][0] == 1.0: # true
+                        if not func(*(datum[0][1])):
+                            Missed.append(list(datum[0]))
+                    elif datum[1][0] == 3.0: #implication_example
+                        if not ((not func(*(datum[0][0]))) or (func(*(datum[0][1])))):
+                            Missed.append(list(datum[0])) 
+                Missed_Smooth = []
+                for datum in zip(train_data,train_labels):  # form: ([[x,y],[w,z]], [label])
+                    #print("Datum is ", datum, " and function smoothed value is ", func_smoothed(*datum[0][int(2-datum[1][0])]))
+                    if datum[1][0] == 2.0: # false
+                        if func_smoothed(*(datum[0][0])):
+                            Missed_Smooth.append(list(datum[0]))
+                    elif datum[1][0] == 1.0:
+                        if not func_smoothed(*(datum[0][1])):
+                            Missed_Smooth.append(list(datum[0]))
+                    elif datum[1][0] == 3.0:
+                        if not ((not func_smoothed(*(datum[0][0]))) or (func_smoothed(*(datum[0][1])))):
+                            Missed_Smooth.append(list(datum[0])) 
+                print("Length of training data is ", len(train_data), " TRAINING DATA IS !!!!", train_data)
+                print("Number missed w/o smooth is ", len(Missed), " with missed examples", Missed)
+                print("Number missed w/ smooth is ", len(Missed_Smooth) , " with missed examples ", Missed_Smooth)
+                if wait:
+                    time.sleep(3) #TODO: for viewing
+                if len(Missed_Smooth) == 0:
+                    log_and_print("Found a solution!!!!!:")
+                    print_program2(best_program, env, smoothed = True)
+                    break
+            elif False: # Moved
+                if len(Missed) == 0 and len(Missed_Smooth) > 0:
+                    pass
+                    #assert False # smoothing ruins it!
+                print("Missed smooth examples are", Missed_Smooth)
+                train_loader = IOExampleLoader(train_data, train_labels, batch_size=batch_size, shuffle=False)
+                for pair in all_graphs:
+                    pair[0] = evaluate(algorithm, pair[1], train_loader, train_config, device)
+                splited_subgraph = program_graph.partition(cmd_args.top_left, cmd_args.GM)
+                partition_num += 1
+                if splited_subgraph is not None:
+                    for subgraph in splited_subgraph:
+                        all_graphs.append([evaluate(algorithm, subgraph, train_loader, train_config, device), subgraph])
+                heapq.heapify(all_graphs)

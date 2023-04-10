@@ -878,11 +878,11 @@ def load_spreadsheet_data_test(problem_num, env): # While I am not 100% sure, I 
 
 if __name__ == '__main__':
     cmd_args = parse_args()
-    num_epochs = 35
-    max_depth = 3
+    num_epochs = 50
+    max_depth = 2
     batch_size = 50
     lr = 0.045
-    top_k = 5 # This is 
+    top_k = 8 # This is 
     random_seeding = True # False for no random seed 
     pre_cooked_data = False # testing to see what 
     problem_num = cmd_args.problem_num
@@ -938,7 +938,7 @@ if __name__ == '__main__':
         probs_times = {}
         for p_num in range(1,134):
             unsolved_probs[p_num] = []
-            unsolved_probs_times[p_num] = [0]
+            probs_times[p_num] = [0]
         for p_num in range(1,134): #[1, 3, 4, 5, 6, 16, 17, 18, 19, 20, 21, 22, 23, 24, 28, 29, 33, 34, 36, 59, 63, 64, 65, 66, 67, 68, 69, 70, 83, 84, 85, 86, 93, 94, 96, 100, 101, 102, 103, 104, 105, 107, 109, 110, 111, 112, 113, 118, 119, 120, 121, 122, 123, 125, 126, 127, 130, 131]: #range(1, 134): # all code2inv programs
             if p_num in [16, 26, 27, 31, 32, 61, 62, 72, 75, 106]:
                 continue # unsolvable so we skip
@@ -957,12 +957,12 @@ if __name__ == '__main__':
                                 print(solved)
                                 print(inv_string)
                                 print(num_iter)
-                                unsolved_probs_times[p_num][0] += time4 - time3
+                                probs_times[p_num][0] += time4 - time3
                                 if solved == "Solved!":
                                     num_solved+=1
                                     solved_probs.append(p_num)
                                     invariant_dict[p_num] = inv_string
-                                    #unsolved_probs_times[p_num] = time2 - time1
+                                    #probs_times[p_num] = time2 - time1
                                     break
                             except Exception as e:
                                 print("An error occurred: ", str(e)) # an empty message means smoothing error

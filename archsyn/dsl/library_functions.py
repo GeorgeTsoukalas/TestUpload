@@ -334,7 +334,9 @@ class AffineFunc(LibraryFunction):
         #grammar_symbols = {"function1": func_syms[0][0], "function2": func_syms[0][1]}
         #grammar_symbols = {"function1": func_syms[0], "function2": func_syms[1]} # CHANGED ON 12/10
         self.bsmooth = nn.Sigmoid().to(device)
-        self.beta = beta
+        self.beta = torch.nn.Parameter(torch.tensor([0.5], requires_grad = True))
+        self.eps = torch.nn.Parameter(torch.tensor([0.5], requires_grad=True))
+
         super().__init__({}, "atom", "atom", input_size, output_size, num_units, name="affine", has_params=True)
 
     def init_params(self):
@@ -348,6 +350,9 @@ class AffineFunc(LibraryFunction):
 
     def execute_on_batch(self, batch, batch_lens=None):
         assert len(batch.size()) == 2
+        with torch.no_grad():
+            self.beta.clamp_(min = 0.1) # following cln2inv
+        
         #print("Batch device is !", batch.device)
         step1 = self.linear_layer(batch)
         #print(step1.device)
@@ -355,7 +360,7 @@ class AffineFunc(LibraryFunction):
         #print(step2.device)
         step3 = self.bsmooth(step2)
         #print(step3.device)
-        return self.bsmooth(self.linear_layer(batch).to(device) * self.beta)#.to(device)
+        return self.bsmooth((self.linear_layer(batch).to(device) - self.eps) * self.beta)#.to(device)
 
 class EqualityFunc(LibraryFunction):
     def __init__(self, input_size, output_size, num_units, sem, *func_syms, function1 = None, function2 = None, beta = 2.5):
@@ -367,7 +372,8 @@ class EqualityFunc(LibraryFunction):
         submodules = {"function1": function1, "function2": function2}
         grammar_symbols = None
         self.bsmooth = nn.Sigmoid()
-        self.beta = beta
+        self.beta = torch.nn.Parameter(torch.tensor([0.5], requires_grad = True))
+        self.eps = torch.nn.Parameter(torch.tensor([0.5], requires_grad=True))
         super().__init__({}, "atom", "atom", input_size, output_size, num_units, name="equality", has_params=True)
 
     def init_params(self):
@@ -381,20 +387,13 @@ class EqualityFunc(LibraryFunction):
 
     def execute_on_batch(self, batch, batch_lens=None):
         assert len(batch.size()) == 2
-        #print("batch is ", batch)
-        #print("batch dimensions are", batch.size())
-        #print("Batch device eq is " , batch.device)
+        with torch.no_grad():
+            self.beta.clamp_(min = 0.1) # following cln2invj
         step1 = self.linear_layer(batch)
-        #print("Step 1 eq device is ", step1.device)
-        step2 = step1 * self.beta
-        #print("Step 2 device eq is ", step2.device)
+        step2 = (step1 - self.eps) * self.beta
         step3 = self.bsmooth(step2)
-        #print("Step 3 device eq is ", step3.device)
-        
         s = step3.to(device)
         torch_ones = torch.ones(s.size()).to(device)
-        #print("torch ones eq device is ", torch_ones.device)
-        #assert False
         return 4*s*(torch_ones - s) #.to(device)
         #return 4 * self.bsmooth(self.linear_layer(batch) * self.beta) * (torch.ones(batch.size()) - self.bsmooth(self.linear_layer(batch) * self.beta)) # using derivative identity for derivative of the sigmoid, this recovers the Gaussian
         # the 4 is to rescale so we actually get outputs of 1 near 0
@@ -406,10 +405,7 @@ class LogicAndFunction(LibraryFunction):
             function1 = init_neural_function("atom", "atom", input_size, output_size, num_units)
         if function2 is None:
             function2 = init_neural_function("atom", "atom", input_size, output_size, num_units)
-        if sem == "arith":
-            self.arith = True # arith semantics approximation
-        else:
-            self.arith = False # min/max semantics approximation
+        self.arith = sem # not exactly the best naming, but for convenience
         submodules = { "function1": function1, "function2": function2 }
         grammar_symbols = None
         #grammar_symbols = {"function1": func_syms[0], "function2": func_syms[1] }
@@ -423,10 +419,12 @@ class LogicAndFunction(LibraryFunction):
         #print (f'type(self.submodules["function2"]) = {self.submodules["function2"]}')
         predicted_function1 = self.submodules["function1"].execute_on_batch(batch)
         predicted_function2 = self.submodules["function2"].execute_on_batch(batch)
-        if self.arith:
+        if self.arith == "arith":
             return predicted_function1 * predicted_function2
-        else:
+        elif self.arith == "minmax":
             return torch.min(predicted_function1, predicted_function2).to(device)
+        elif self.arith == "luka": # for Lukasiewicz t-norm
+            return torch.max(0, predicted_function1 + predicted_function2 - 1).to(device)
 
 
 class LogicOrFunction(LibraryFunction): 
@@ -436,10 +434,7 @@ class LogicOrFunction(LibraryFunction):
             function1 = init_neural_function("atom", "atom", input_size, output_size, num_units)
         if function2 is None:
             function2 = init_neural_function("atom", "atom", input_size, output_size, num_units)
-        if sem == "arith":
-            self.arith = True # arith semantics approximation
-        else:
-            self.arith = False # min/max semantics approximation
+        self.arith = sem # not exactly the best naming, but for convenience
         submodules = { "function1": function1, "function2": function2 }
         grammar_symbols = None
         #grammar_symbols = {"function1": func_syms[0], "function2": func_syms[1] }
@@ -451,13 +446,15 @@ class LogicOrFunction(LibraryFunction):
         #print (f'batch_or = {batch} and batch_lens = {batch.size()}')
         predicted_function1 = self.submodules["function1"].execute_on_batch(batch)
         predicted_function2 = self.submodules["function2"].execute_on_batch(batch)
-        if self.arith:
+        if self.arith == "arith":
             return predicted_function1 + predicted_function2 - predicted_function1 * predicted_function2
-        else:
+        elif self.arith == "minmax":
             return torch.max(predicted_function1, predicted_function2).to(device)
+        elif self.arith == "luka": # for Lukasiewicz t-conorm
+            return torch.min(predicted_function1 + predicted_function2, 1).to(device)
 
 
-class LogicXorFunction(LibraryFunction):
+class LogicXorFunction(LibraryFunction): # not used in current experiments
 
     def __init__(self, input_size, output_size, num_units, sem, *func_syms, function1=None, function2=None):
         if function1 is None:

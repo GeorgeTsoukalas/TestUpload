@@ -18,8 +18,8 @@ import os
 import time 
 
 class NAS(ProgramLearningAlgorithm):
-    regularization = False
-    rat = 0.0003
+    regularization = True
+    rat = 0.000001
     def __init__(self, frontier_capacity=float('inf')):
         self.frontier_capacity = frontier_capacity
 
